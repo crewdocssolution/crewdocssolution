@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CREW & DOCS SOLUTION</title>
     
-    <!-- Подключаем Tailwind CSS для стилей -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     
-    <!-- Подключаем иконки Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
-    <!-- Подключаем библиотеку Alpine.js для интерактивности (меню, табы, модалка) -->
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
     <style>
@@ -23,30 +20,67 @@
         mobileMenuOpen: false, 
         activeTab: 'docs', 
         modalActive: false,
+        isSending: false,
         formData: { name: '', phone: '', service: 'Дипломирование' },
+        
+        // НАСТРОЙКА ТЕЛЕГРАМА (Ваши рабочие ключи)
+        telegramToken: '8738644530:AAE_7wsg03gDmklA-OWl9LI1NFHDhBdGheg', 
+        telegramChatId: '-5049944786', 
+
         scrollTo(id) {
             document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
             this.mobileMenuOpen = false;
         },
-        submitForm() {
-            if(this.formData.name && this.formData.phone) {
-                this.modalActive = true;
+        
+        async submitForm() {
+            if(!this.formData.name || !this.formData.phone) return;
+            
+            this.isSending = true;
+
+            // Формируем красивое текстовое сообщение для вашей группы менеджеров
+            const textMessage = `🚨 *Новая заявка на сайте!* \n\n` +
+                                `👤 *Имя:* ${this.formData.name}\n` +
+                                `📞 *Телефон:* ${this.formData.phone}\n` +
+                                `💼 *Услуга:* ${this.formData.service}\n\n` +
+                                `📅 *Дата:* ${new Date().toLocaleString('ru-RU')}`;
+
+            try {
+                // Отправляем запрос к официальному API Telegram
+                const response = await fetch(`https://api.telegram.org/bot${this.telegramToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: this.telegramChatId,
+                        text: textMessage,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+                if (response.ok) {
+                    // Если отправка успешна, открываем модальное окно на сайте
+                    this.modalActive = true;
+                } else {
+                    alert('Ошибка отправки. Убедитесь, что бот добавлен в вашу группу как администратор.');
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                alert('Произошла ошибка сети. Попробуйте еще раз позже.');
+            } finally {
+                this.isSending = false;
             }
         },
+        
         closeModal() {
             this.modalActive = false;
             this.formData = { name: '', phone: '', service: 'Дипломирование' };
         }
       }">
 
-    <!-- --- ШАПКА САЙТА (HEADER) --- -->
     <header class="sticky top-0 z-50 bg-[#22050b]/95 backdrop-blur-md border-b border-[#3d131d] px-4 py-3 sm:py-4">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             
-            <!-- Логотип -->
             <div class="flex items-center space-x-3 cursor-pointer" @click="scrollTo('hero')">
                 <div class="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-[#8da388] bg-[#320b14] flex items-center justify-center overflow-hidden shadow-lg">
-                    <!-- Путь к картинке. Она должна лежать в той же папке, что и этот index.html -->
                     <img src="./logo.jpeg" alt="CREW & DOCS Logo" class="w-full h-full object-cover">
                 </div>
                 <div>
@@ -55,26 +89,23 @@
                 </div>
             </div>
 
-            <!-- Десктопная Навигация -->
             <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-                <button @click="scrollTo('about')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Почему мы</button>
-                <button @click="scrollTo('services')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Наши услуги</button>
-                <button @click="scrollTo('contact')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Оставить заявку</button>
-                <button @click="scrollTo('footer')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Контакты</button>
+                <button @click="scrollTo('about')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Why Us</button>
+                <button @click="scrollTo('services')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Services</button>
+                <button @click="scrollTo('contact')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Apply</button>
+                <button @click="scrollTo('footer')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Contacts</button>
             </nav>
 
-            <!-- Контакты в шапке -->
             <div class="hidden sm:flex items-center space-x-4">
                 <a href="tel:+380972567737" class="flex items-center space-x-2 text-sm font-semibold text-gray-200 hover:text-[#9eb598] transition-colors">
                     <i data-lucide="phone" class="w-4 h-4 text-[#8da388]"></i>
                     <span>+380 (97) 256-77-37</span>
                 </a>
                 <button @click="scrollTo('contact')" class="px-4 py-2 text-xs sm:text-sm bg-gradient-to-r from-[#4d614a] to-[#3a4938] text-white font-semibold rounded-lg shadow-md hover:from-[#5d755a] hover:to-[#465943] transition-all border border-[#8da388]/30 cursor-pointer">
-                    Консультация
+                    Consultation
                 </button>
             </div>
 
-            <!-- Кнопка Мобильного Меню -->
             <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-gray-300 hover:text-white">
                 <i data-lucide="menu" x-show="!mobileMenuOpen" class="w-6 h-6"></i>
                 <i data-lucide="x" x-show="mobileMenuOpen" x-cloak class="w-6 h-6"></i>
@@ -82,24 +113,22 @@
         </div>
     </header>
 
-    <!-- Мобильное Меню -->
     <div x-show="mobileMenuOpen" x-cloak class="md:hidden fixed inset-0 z-40 bg-[#1c0409]/98 pt-24 px-6 flex flex-col space-y-6 text-lg font-medium border-b border-[#3d131d]">
-        <button @click="scrollTo('about')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Почему мы</button>
-        <button @click="scrollTo('services')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Наши услуги</button>
-        <button @click="scrollTo('contact')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Оставить заявку</button>
-        <button @click="scrollTo('footer')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Контакты</button>
+        <button @click="scrollTo('about')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Why Us</button>
+        <button @click="scrollTo('services')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Services</button>
+        <button @click="scrollTo('contact')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Apply</button>
+        <button @click="scrollTo('footer')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Contacts</button>
         <div class="pt-6 flex flex-col space-y-4">
             <a href="tel:+380972567737" class="flex items-center space-x-3 text-base text-gray-200 py-2">
                 <i data-lucide="phone" class="w-5 h-5 text-[#8da388]"></i>
                 <span>+380 (97) 256-77-37</span>
             </a>
             <button @click="scrollTo('contact')" class="w-full py-3 bg-[#4d614a] text-white font-semibold rounded-xl text-center shadow-lg">
-                Бесплатная консультация
+                Free Consultation
             </button>
         </div>
     </div>
 
-    <!-- --- БЛОК 1: ГЛАВНЫЙ ЭКРАН (HERO) --- -->
     <section id="hero" class="relative min-h-[85vh] flex items-center justify-center pt-8 pb-16 px-4 overflow-hidden">
         <div class="absolute top-1/4 left-1/10 w-96 h-96 bg-[#4d614a]/10 rounded-full blur-[120px] pointer-events-none"></div>
         <div class="absolute bottom-1/4 right-1/10 w-80 h-80 bg-[#a13b4e]/10 rounded-full blur-[100px] pointer-events-none"></div>
@@ -149,7 +178,6 @@
         </div>
     </section>
 
-    <!-- --- БЛОК 2: ПРЕИМУЩЕСТВА --- -->
     <section id="about" class="py-20 bg-[#1c0409] border-y border-[#3d131d] px-4">
         <div class="max-w-6xl mx-auto space-y-12">
             <div class="text-center space-y-4">
@@ -191,7 +219,6 @@
         </div>
     </section>
 
-    <!-- --- БЛОК 3: УСЛУГИ (ТАБЫ) --- -->
     <section id="services" class="py-20 px-4 max-w-6xl mx-auto space-y-12">
         <div class="text-center space-y-4">
             <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Комплекс услуг «Под ключ»</h2>
@@ -199,7 +226,6 @@
         </div>
 
         <div class="space-y-8">
-            <!-- Переключатели -->
             <div class="flex flex-col sm:flex-row justify-center gap-2 p-1.5 bg-[#1b0307] rounded-xl sm:rounded-2xl max-w-4xl mx-auto border border-[#3d131d]">
                 <button @click="activeTab = 'docs'" :class="activeTab === 'docs' ? 'bg-[#4d614a] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="flex items-center justify-center space-x-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer">
                     <i data-lucide="file-text" class="w-4 h-4"></i><span>Дипломирование</span>
@@ -215,10 +241,8 @@
                 </button>
             </div>
 
-            <!-- Контент Табов -->
             <div class="bg-gradient-to-br from-[#2b0811] to-[#1c0409] border border-[#4d1925] rounded-2xl p-6 sm:p-10 shadow-2xl max-w-4xl mx-auto">
                 
-                <!-- Вкладка 1 -->
                 <div x-show="activeTab === 'docs'" class="space-y-6">
                     <h3 class="text-xl font-bold text-white flex items-center gap-3"><i data-lucide="file-text" class="text-[#9eb598]"></i> Документы и Дипломирование</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -229,7 +253,6 @@
                     </div>
                 </div>
 
-                <!-- Вкладка 2 -->
                 <div x-show="activeTab === 'tests'" class="space-y-6" x-cloak>
                     <h3 class="text-xl font-bold text-white flex items-center gap-3"><i data-lucide="award" class="text-[#9eb598]"></i> Тестирование и Подготовка</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -240,7 +263,6 @@
                     </div>
                 </div>
 
-                <!-- Вкладка 3 -->
                 <div x-show="activeTab === 'job'" class="space-y-6" x-cloak>
                     <h3 class="text-xl font-bold text-white flex items-center gap-3"><i data-lucide="briefcase" class="text-[#9eb598]"></i> Трудоустройство</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -251,7 +273,6 @@
                     </div>
                 </div>
 
-                <!-- Вкладка 4 -->
                 <div x-show="activeTab === 'health'" class="space-y-6" x-cloak>
                     <h3 class="text-xl font-bold text-white flex items-center gap-3"><i data-lucide="heart-pulse" class="text-[#9eb598]"></i> Здоровье и Логистика</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -272,7 +293,6 @@
         </div>
     </section>
 
-    <!-- --- БЛОК 4: ФОРМА --- -->
     <section id="contact" class="py-20 bg-[#1c0409] border-t border-[#3d131d] px-4">
         <div class="max-w-4xl mx-auto">
             <div class="bg-[#2a0b12] border-2 border-[#521c27] rounded-3xl p-6 sm:p-12 relative overflow-hidden shadow-2xl">
@@ -305,8 +325,11 @@
                                 <option value="Другое">Другое (Консультация по нестандартной ситуации)</option>
                             </select>
                         </div>
-                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-[#4d614a] to-[#3a4938] hover:from-[#5d755a] hover:to-[#465943] text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-3 text-base cursor-pointer">
-                            <i data-lucide="send" class="w-5 h-5"></i><span>Отправить заявку</span>
+                        
+                        <button type="submit" :disabled="isSending" class="w-full py-4 bg-gradient-to-r from-[#4d614a] to-[#3a4938] hover:from-[#5d755a] hover:to-[#465943] text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-3 text-base cursor-pointer disabled:opacity-50">
+                            <i data-lucide="send" class="w-5 h-5" x-show="!isSending"></i>
+                            <span x-show="!isSending">Отправить заявку</span>
+                            <span x-show="isSending" x-cloak>Отправка...</span>
                         </button>
                     </form>
                 </div>
@@ -314,7 +337,6 @@
         </div>
     </section>
 
-    <!-- --- БЛОК 5: ПОДВАЛ --- -->
     <footer id="footer" class="bg-[#100104] text-gray-400 py-16 px-4 border-t border-[#3d131d]">
         <div class="max-w-6xl mx-auto space-y-12">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -363,7 +385,6 @@
         </div>
     </footer>
 
-    <!-- --- МОДАЛЬНОЕ ОКНО --- -->
     <div x-show="modalActive" x-cloak class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm">
         <div class="bg-[#2a0b12] border-2 border-[#8da388]/30 p-6 sm:p-10 rounded-2xl max-w-md w-full text-center space-y-6 shadow-2xl relative" @click.away="closeModal()">
             <div class="w-16 h-16 rounded-full bg-[#4d614a]/30 border border-[#8da388] flex items-center justify-center mx-auto text-[#9eb598]">
@@ -383,7 +404,6 @@
         </div>
     </div>
 
-    <!-- Инициализация иконок Lucide после загрузки страницы -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             lucide.createIcons();
