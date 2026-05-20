@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREW & DOCS SOLUTION</title>
+    
+    <!-- Подключаем Tailwind CSS для стилей -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    <!-- Подключаем иконки Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Подключаем библиотеку Alpine.js для интерактивности (меню, табы, модалка) -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="min-h-screen bg-[#22050b] text-[#fcfaf7] font-sans overflow-x-hidden selection:bg-[#4d614a] selection:text-[#fcfaf7]" 
+      x-data="{ 
+        mobileMenuOpen: false, 
+        activeTab: 'docs', 
+        modalActive: false,
+        formData: { name: '', phone: '', service: 'Дипломирование' },
+        scrollTo(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+            this.mobileMenuOpen = false;
+        },
+        submitForm() {
+            if(this.formData.name && this.formData.phone) {
+                this.modalActive = true;
+            }
+        },
+        closeModal() {
+            this.modalActive = false;
+            this.formData = { name: '', phone: '', service: 'Дипломирование' };
+        }
+      }">
+
+    <!-- --- ШАПКА САЙТА (HEADER) --- -->
+    <header class="sticky top-0 z-50 bg-[#22050b]/95 backdrop-blur-md border-b border-[#3d131d] px-4 py-3 sm:py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Логотип -->
+            <div class="flex items-center space-x-3 cursor-pointer" @click="scrollTo('hero')">
+                <div class="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-[#8da388] bg-[#320b14] flex items-center justify-center overflow-hidden shadow-lg">
+                    <!-- Путь к картинке. Она должна лежать в той же папке, что и этот index.html -->
+                    <img src="./logo.jpeg" alt="CREW & DOCS Logo" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <span class="block text-sm sm:text-base font-bold tracking-wider text-white">CREW & DOCS</span>
+                    <span class="block text-[9px] sm:text-[10px] tracking-widest text-[#8da388] uppercase font-semibold">Solution</span>
+                </div>
+            </div>
+
+            <!-- Десктопная Навигация -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <button @click="scrollTo('about')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Почему мы</button>
+                <button @click="scrollTo('services')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Наши услуги</button>
+                <button @click="scrollTo('contact')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Оставить заявку</button>
+                <button @click="scrollTo('footer')" class="text-gray-300 hover:text-[#9eb598] transition-colors cursor-pointer">Контакты</button>
+            </nav>
+
+            <!-- Контакты в шапке -->
+            <div class="hidden sm:flex items-center space-x-4">
+                <a href="tel:+380972567737" class="flex items-center space-x-2 text-sm font-semibold text-gray-200 hover:text-[#9eb598] transition-colors">
+                    <i data-lucide="phone" class="w-4 h-4 text-[#8da388]"></i>
+                    <span>+380 (97) 256-77-37</span>
+                </a>
+                <button @click="scrollTo('contact')" class="px-4 py-2 text-xs sm:text-sm bg-gradient-to-r from-[#4d614a] to-[#3a4938] text-white font-semibold rounded-lg shadow-md hover:from-[#5d755a] hover:to-[#465943] transition-all border border-[#8da388]/30 cursor-pointer">
+                    Консультация
+                </button>
+            </div>
+
+            <!-- Кнопка Мобильного Меню -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden p-2 text-gray-300 hover:text-white">
+                <i data-lucide="menu" x-show="!mobileMenuOpen" class="w-6 h-6"></i>
+                <i data-lucide="x" x-show="mobileMenuOpen" x-cloak class="w-6 h-6"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Мобильное Меню -->
+    <div x-show="mobileMenuOpen" x-cloak class="md:hidden fixed inset-0 z-40 bg-[#1c0409]/98 pt-24 px-6 flex flex-col space-y-6 text-lg font-medium border-b border-[#3d131d]">
+        <button @click="scrollTo('about')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Почему мы</button>
+        <button @click="scrollTo('services')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Наши услуги</button>
+        <button @click="scrollTo('contact')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Оставить заявку</button>
+        <button @click="scrollTo('footer')" class="text-left py-2 text-gray-200 border-b border-[#310c14]">Контакты</button>
+        <div class="pt-6 flex flex-col space-y-4">
+            <a href="tel:+380972567737" class="flex items-center space-x-3 text-base text-gray-200 py-2">
+                <i data-lucide="phone" class="w-5 h-5 text-[#8da388]"></i>
+                <span>+380 (97) 256-77-37</span>
+            </a>
+            <button @click="scrollTo('contact')" class="w-full py-3 bg-[#4d614a] text-white font-semibold rounded-xl text-center shadow-lg">
+                Бесплатная консультация
+            </button>
+        </div>
+    </div>
+
+    <!-- --- БЛОК 1: ГЛАВНЫЙ ЭКРАН (HERO) --- -->
+    <section id="hero" class="relative min-h-[85vh] flex items-center justify-center pt-8 pb-16 px-4 overflow-hidden">
+        <div class="absolute top-1/4 left-1/10 w-96 h-96 bg-[#4d614a]/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 right-1/10 w-80 h-80 bg-[#a13b4e]/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#3d131d_1px,transparent_1px),linear-gradient(to_bottom,#3d131d_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-35"></div>
+
+        <div class="max-w-5xl mx-auto text-center relative z-10 space-y-8 px-2 sm:px-6">
+            <div class="inline-flex items-center space-x-2 bg-[#310c14] border border-[#5a1c29] px-4 py-1.5 rounded-full text-xs sm:text-sm text-[#9eb598] font-medium tracking-wide shadow-md">
+                <span class="w-2 h-2 rounded-full bg-[#8da388] animate-pulse"></span>
+                <span>Официальное оформление для моряков Украины и ЕС</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-tight text-white max-w-4xl mx-auto">
+                CREW & DOCS SOLUTION <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#d9dfd8] via-[#a7bea2] to-[#8da388]">
+                    Ваш надежный фарватер в мире морских документов
+                </span>
+            </h1>
+
+            <p class="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mx-auto font-light leading-relaxed">
+                Сложные квесты с бюрократией берем на себя. Полный комплекс услуг для моряков <span class="text-white font-medium">«под ключ»</span>: от легитимных сертификатов до содействия в контракте.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                <button @click="scrollTo('contact')" class="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-[#4d614a] to-[#3a4938] hover:from-[#5d755a] hover:to-[#465943] text-white font-bold rounded-xl shadow-xl flex items-center justify-center space-x-3 text-base sm:text-lg cursor-pointer group">
+                    <span>Получить бесплатную консультацию</span>
+                    <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+                <button @click="scrollTo('services')" class="w-full sm:w-auto px-8 py-4 bg-[#2f0d15] hover:bg-[#3d131d] text-gray-200 hover:text-white font-semibold rounded-xl border border-[#521c27] flex items-center justify-center space-x-2 cursor-pointer">
+                    <span>Наши услуги</span>
+                </button>
+            </div>
+
+            <div class="pt-8 grid grid-cols-2 md:grid-cols-3 gap-4 max-w-3xl mx-auto text-xs sm:text-sm text-gray-400">
+                <div class="flex items-center justify-center space-x-2 bg-[#2a0b12]/60 p-3 rounded-lg border border-[#3f151f]">
+                    <i data-lucide="shield-check" class="w-5 h-5 text-[#8da388]"></i>
+                    <span>100% Легитимность</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 bg-[#2a0b12]/60 p-3 rounded-lg border border-[#3f151f]">
+                    <i data-lucide="clock" class="w-5 h-5 text-[#8da388]"></i>
+                    <span>Быстрое оформление</span>
+                </div>
+                <div class="flex items-center justify-center space-x-2 bg-[#2a0b12]/60 p-3 rounded-lg border border-[#3f151f] col-span-2 md:col-span-1">
+                    <i data-lucide="user-check" class="w-5 h-5 text-[#8da388]"></i>
+                    <span>Сопровождение 24/7</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- БЛОК 2: ПРЕИМУЩЕСТВА --- -->
+    <section id="about" class="py-20 bg-[#1c0409] border-y border-[#3d131d] px-4">
+        <div class="max-w-6xl mx-auto space-y-12">
+            <div class="text-center space-y-4">
+                <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Почему моряки доверяют именно нам</h2>
+                <div class="w-20 h-1 bg-[#8da388] mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-6">
+                <div class="bg-[#290a12] border border-[#4d1925] rounded-2xl p-6 sm:p-8 space-y-4 shadow-lg">
+                    <div class="w-12 h-12 rounded-xl bg-[#4d614a]/20 border border-[#8da388]/30 flex items-center justify-center">
+                        <i data-lucide="shield-check" class="w-6 h-6 text-[#9eb598]"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-white">100% Легитимность</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Полная прозрачность. Все документы регистрируются через официальный <strong>Государственный реестр документов моряков Украины</strong> и систему <strong>MORAD</strong>.
+                    </p>
+                </div>
+
+                <div class="bg-[#290a12] border border-[#4d1925] rounded-2xl p-6 sm:p-8 space-y-4 shadow-lg">
+                    <div class="w-12 h-12 rounded-xl bg-[#4d614a]/20 border border-[#8da388]/30 flex items-center justify-center">
+                        <i data-lucide="clock" class="w-6 h-6 text-[#9eb598]"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-white">Скорость и логистика</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Экспресс-доставка оригиналов ваших готовых сертификатов и бланков курьерскими службами прямо в руки в любую точку Европы 🇪🇺.
+                    </p>
+                </div>
+
+                <div class="bg-[#290a12] border border-[#4d1925] rounded-2xl p-6 sm:p-8 space-y-4 shadow-lg">
+                    <div class="w-12 h-12 rounded-xl bg-[#4d614a]/20 border border-[#8da388]/30 flex items-center justify-center">
+                        <i data-lucide="map-pin" class="w-6 h-6 text-[#9eb598]"></i>
+                    </div>
+                    <h3 class="text-lg sm:text-xl font-bold text-white">Личный подход</h3>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Мы ценим доверие и всегда готовы провести личную встречу в нашем уютном офисе в Одессе для детального планирования вашей карьеры.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- БЛОК 3: УСЛУГИ (ТАБЫ) --- -->
+    <section id="services" class="py-20 px-4 max-w-6xl mx-auto space-y-12">
+        <div class="text-center space-y-4">
+            <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Комплекс услуг «Под ключ»</h2>
+            <div class="w-20 h-1 bg-[#8da388] mx-auto rounded-full"></div>
+        </div>
+
+        <div class="space-y-8">
+            <!-- Переключатели -->
+            <div class="flex flex-col sm:flex-row justify-center gap-2 p-1.5 bg-[#1b0307] rounded-xl sm:rounded-2xl max-w-4xl mx-auto border border-[#3d131d]">
+                <button @click="activeTab = 'docs'" :class="activeTab === 'docs' ? 'bg-[#4d614a] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="flex items-center justify-center space-x-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer">
+                    <i data-lucide="file-text" class="w-4 h-4"></i><span>Дипломирование</span>
+                </button>
+                <button @click="activeTab = 'tests'" :class="activeTab === 'tests' ? 'bg-[#4d614a] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="flex items-center justify-center space-x-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer">
+                    <i data-lucide="award" class="w-4 h-4"></i><span>Тестирование</span>
+                </button>
+                <button @click="activeTab = 'job'" :class="activeTab === 'job' ? 'bg-[#4d614a] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="flex items-center justify-center space-x-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer">
+                    <i data-lucide="briefcase" class="w-4 h-4"></i><span>Трудоустройство</span>
+                </button>
+                <button @click="activeTab = 'health'" :class="activeTab === 'health' ? 'bg-[#4d614a] text-white shadow-md' : 'text-gray-400 hover:text-white'" class="flex items-center justify-center space-x-2 py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer">
+                    <i data-lucide="heart-pulse" class="w-4 h-4"></i><span>Здоровье и Логистика</span>
+                </button>
+            </div>
+
+            <!-- Контент Табов -->
+            <div class="bg-gradient-to-br from-[#2b0811] to-[#1c0409] border border-[#4d1925] rounded-2xl p-6 sm:p-10 shadow-2xl max-w-4xl mx-auto">
+                
+                <!-- Вкладка 1 -->
+                <div x-show="activeTab === 'docs'" class="space-y-6">
+                    <h3 class="text-xl font-bold text-white flex items-center gap-3"><i data-lucide="file-text" class="text-[#9eb598]"></i> Документы и Дипломирование</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Пакеты легитимных сертификатов через тренинг-центры.</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Обновление дипломов и званий через Администрацию судоходства (MORAD).</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Полное сопровождение документов без задержек.</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Оформление и продление послужных книжек (ПКМ).</span></div>
+                    </div>
+                </div>
+
+                <!-- Вкладка 2 -->
+                <div x-show="activeTab === 'tests'" class="space-y-6" x-cloak>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-3"><i data-lucide="award" class="text-[#9eb598]"></i> Тестирование и Подготовка</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Подготовка и помощь в сдаче компьютерных тестов: CES, MARLINS и др.</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Гарантия положительного результата по проверенным методикам.</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Оценка уровня английского языка и профильных дисциплин.</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Консультации действующих инструкторов и капитанов.</span></div>
+                    </div>
+                </div>
+
+                <!-- Вкладка 3 -->
+                <div x-show="activeTab === 'job'" class="space-y-6" x-cloak>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-3"><i data-lucide="briefcase" class="text-[#9eb598]"></i> Трудоустройство</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Содействие в поиске первого или высокооплачиваемого контракта.</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Постановка на учет в ведущих крюингах Украины и Европы.</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Грамотное составление резюме (CV) под судовладельцев.</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Подготовка к прохождению собеседования на английском языке.</span></div>
+                    </div>
+                </div>
+
+                <!-- Вкладка 4 -->
+                <div x-show="activeTab === 'health'" class="space-y-6" x-cloak>
+                    <h3 class="text-xl font-bold text-white flex items-center gap-3"><i data-lucide="heart-pulse" class="text-[#9eb598]"></i> Здоровье и Логистика</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Организация быстрого прохождения морских медкомиссий (Украина, Румыния, Польша).</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Получение сертификатов, одобренных международными флагами (P&I club).</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Экспресс-доставка оригиналов документов по всей Европе 🇪🇺.</span></div>
+                        <div class="p-4 bg-[#310c14]/40 rounded-xl border border-[#461722] flex gap-3"><i data-lucide="check-circle-2" class="text-[#8da388] shrink-0 mt-0.5 w-5 h-5"></i><span>Полная логистическая поддержка на всех этапах оформления.</span></div>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-[#461722]/50 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <p class="text-xs text-gray-400 text-center sm:text-left">* Все услуги соответствуют актуальному законодательству.</p>
+                    <button @click="scrollTo('contact')" class="w-full sm:w-auto px-6 py-3 bg-[#4d614a] hover:bg-[#5d755a] text-white text-sm font-semibold rounded-xl flex items-center justify-center gap-2 cursor-pointer">
+                        <span>Заказать консультацию</span><i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- БЛОК 4: ФОРМА --- -->
+    <section id="contact" class="py-20 bg-[#1c0409] border-t border-[#3d131d] px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-[#2a0b12] border-2 border-[#521c27] rounded-3xl p-6 sm:p-12 relative overflow-hidden shadow-2xl">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-[#4d614a]/10 rounded-full blur-[80px] pointer-events-none"></div>
+                <div class="relative z-10 space-y-8">
+                    <div class="text-center space-y-3">
+                        <span class="text-[#8da388] text-xs sm:text-sm tracking-widest uppercase font-bold">Быстрая связь</span>
+                        <h2 class="text-2xl sm:text-4xl font-extrabold text-white">Разберем вашу ситуацию прямо сейчас</h2>
+                        <p class="text-gray-300 text-sm max-w-xl mx-auto font-light">Оставьте заявку. Мы свяжемся с вами в течение 15 минут, составим план действий и рассчитаем стоимость.</p>
+                    </div>
+
+                    <form @submit.prevent="submitForm()" class="space-y-6 max-w-2xl mx-auto">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-xs sm:text-sm font-semibold text-gray-300">Ваше имя *</label>
+                                <input type="text" required x-model="formData.name" placeholder="Иван Петров" class="w-full bg-[#1b0307] border border-[#521c27] focus:border-[#8da388] rounded-xl px-4 py-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-1 focus:ring-[#8da388]">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-xs sm:text-sm font-semibold text-gray-300">Номер телефона *</label>
+                                <input type="tel" required x-model="formData.phone" placeholder="+380 (97) 256-77-37" class="w-full bg-[#1b0307] border border-[#521c27] focus:border-[#8da388] rounded-xl px-4 py-3.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:ring-1 focus:ring-[#8da388]">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="block text-xs sm:text-sm font-semibold text-gray-300">Желаемая услуга / Должность</label>
+                            <select x-model="formData.service" class="w-full bg-[#1b0307] border border-[#521c27] focus:border-[#8da388] rounded-xl px-4 py-3.5 text-white text-sm focus:outline-none focus:ring-1 focus:ring-[#8da388] cursor-pointer">
+                                <option value="Дипломирование">Дипломирование (Сертификаты, Дипломы MORAD, Послужные книжки)</option>
+                                <option value="Тесты">Помощь в тестировании (CES, Marlins и др.)</option>
+                                <option value="Медкомиссия">Морская медкомиссия (Украина / ЕС)</option>
+                                <option value="Трудоустройство">Трудоустройство (Постановка на учет, Продвижение)</option>
+                                <option value="Другое">Другое (Консультация по нестандартной ситуации)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full py-4 bg-gradient-to-r from-[#4d614a] to-[#3a4938] hover:from-[#5d755a] hover:to-[#465943] text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-3 text-base cursor-pointer">
+                            <i data-lucide="send" class="w-5 h-5"></i><span>Отправить заявку</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- --- БЛОК 5: ПОДВАЛ --- -->
+    <footer id="footer" class="bg-[#100104] text-gray-400 py-16 px-4 border-t border-[#3d131d]">
+        <div class="max-w-6xl mx-auto space-y-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-full border border-[#8da388] bg-[#320b14] flex items-center justify-center overflow-hidden">
+                            <img src="./logo.jpeg" alt="CREW & DOCS Logo" class="w-full h-full object-cover">
+                        </div>
+                        <div><span class="block text-base font-bold text-white tracking-wider">CREW & DOCS</span><span class="block text-[10px] tracking-widest text-[#8da388] uppercase font-semibold">Solution</span></div>
+                    </div>
+                    <p class="text-sm font-light leading-relaxed">Оформление морских документов «под ключ», дипломирование в Администрации Судоходства Украины, легитимные тренинг-центры.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <h4 class="text-white font-bold text-sm tracking-widest uppercase">Навигация</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><button @click="scrollTo('hero')" class="hover:text-white cursor-pointer">Главная</button></li>
+                        <li><button @click="scrollTo('about')" class="hover:text-white cursor-pointer">Преимущества</button></li>
+                        <li><button @click="scrollTo('services')" class="hover:text-white cursor-pointer">Комплекс услуг</button></li>
+                        <li><button @click="scrollTo('contact')" class="hover:text-white cursor-pointer">Оставить заявку</button></li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <h4 class="text-white font-bold text-sm tracking-widest uppercase">Контакты</h4>
+                    <div class="space-y-3 text-sm text-gray-300">
+                        <a href="tel:+380972567737" class="flex items-center gap-2 hover:text-white"><i data-lucide="phone" class="w-4 h-4 text-[#8da388]"></i><span>+380 (97) 256-77-37</span></a>
+                        <a href="mailto:crewdocssolution@gmail.com" class="flex items-center gap-2 hover:text-white"><i data-lucide="mail" class="w-4 h-4 text-[#8da388]"></i><span>crewdocssolution@gmail.com</span></a>
+                        <div class="flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-[#8da388]"></i><span>Одесса, Украина</span></div>
+                    </div>
+
+                    <div class="pt-2">
+                        <div class="flex flex-wrap gap-2">
+                            <a href="https://t.me/my_crewdocs" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 bg-[#2a0c12] border border-[#4d1925] rounded-lg text-xs text-gray-200 hover:border-[#1a8a9d]"><i data-lucide="message-square" class="w-4 h-4 text-[#1a8a9d]"></i><span>Telegram</span></a>
+                            <a href="https://wa.me/380972567737" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 bg-[#2a0c12] border border-[#4d1925] rounded-lg text-xs text-gray-200 hover:border-[#25d366])"><i data-lucide="message-square" class="w-4 h-4 text-[#25d366]"></i><span>WhatsApp</span></a>
+                            <a href="https://www.instagram.com/crewdocs_solution" target="_blank" class="flex items-center gap-1.5 px-3 py-1.5 bg-[#2a0c12] border border-[#4d1925] rounded-lg text-xs text-gray-200 hover:border-[#e1306c]"><i data-lucide="instagram" class="w-4 h-4 text-[#e1306c]"></i><span>Instagram</span></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-[#1e070c] flex flex-col sm:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+                <p>© 2026 CREW & DOCS SOLUTION. Все права защищены.</p>
+                <p>Проверка легитимности через официальный Государственный реестр Украины в системе MORAD.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- --- МОДАЛЬНОЕ ОКНО --- -->
+    <div x-show="modalActive" x-cloak class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm">
+        <div class="bg-[#2a0b12] border-2 border-[#8da388]/30 p-6 sm:p-10 rounded-2xl max-w-md w-full text-center space-y-6 shadow-2xl relative" @click.away="closeModal()">
+            <div class="w-16 h-16 rounded-full bg-[#4d614a]/30 border border-[#8da388] flex items-center justify-center mx-auto text-[#9eb598]">
+                <i data-lucide="check-circle-2" class="w-10 h-10"></i>
+            </div>
+            <div class="space-y-2">
+                <h3 class="text-xl sm:text-2xl font-bold text-white">Заявка принята!</h3>
+                <p class="text-sm text-gray-300">Благодарим вас, <strong class="text-white" x-text="formData.name"></strong>. Мы получили ваш запрос.</p>
+                <p class="text-xs text-gray-400 pt-2">Специалист свяжется с вами по номеру <strong class="text-white" x-text="formData.phone"></strong> в течение 15 минут.</p>
+            </div>
+            <div class="flex flex-col space-y-2">
+                <a href="https://t.me/my_crewdocs" target="_blank" class="w-full py-2.5 bg-[#1c8ba6]/80 hover:bg-[#1c8ba6] text-white text-xs sm:text-sm font-semibold rounded-lg flex items-center justify-center gap-2">
+                    <i data-lucide="message-square" class="w-4 h-4"></i><span>Написать в Telegram напрямую</span>
+                </a>
+                <button @click="closeModal()" class="w-full py-2.5 bg-[#3d131d] hover:bg-[#521c27] text-gray-200 text-xs sm:text-sm font-semibold rounded-lg cursor-pointer">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Инициализация иконок Lucide после загрузки страницы -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
