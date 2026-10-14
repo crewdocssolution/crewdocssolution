@@ -27,7 +27,7 @@
 <script>
 document.getElementById("lead").addEventListener("submit",async e=>{
 e.preventDefault();const form=e.currentTarget;const send=document.getElementById("send");const result=document.getElementById("result");send.disabled=true;send.textContent="Отправка...";result.textContent="";
-try{const r=await fetch("https://ibnainoudyjugfilznuc.supabase.co/functions/v1/crewdocs-lead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:form.name.value,phone:form.phone.value,service:"Паспорт моряка Бермуды",website:form.website.value})});const data=await r.json();if(!r.ok||!data.ok)throw Error("send failed");result.textContent="Заявка отправлена! Мы свяжемся с вами.";form.reset()}catch{result.textContent="Не удалось отправить заявку. Пожалуйста, напишите нам в Telegram: @my_crewdocs."}finally{send.disabled=false;send.textContent="Отправить заявку";}
+try{const r=await fetch("https://ibnainoudyjugfilznuc.supabase.co/functions/v1/crewdocs-lead",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:form.elements.namedItem("name").value,phone:form.elements.namedItem("phone").value,service:"Паспорт моряка Бермуды",website:form.elements.namedItem("website").value})});const data=await r.json();if(!r.ok||!data.ok)throw Error("send failed");result.textContent="Заявка отправлена! Мы свяжемся с вами.";form.reset()}catch{result.textContent="Не удалось отправить заявку. Пожалуйста, напишите нам в Telegram: @my_crewdocs."}finally{send.disabled=false;send.textContent="Отправить заявку";}
 });
 </script>
 </body></html>
