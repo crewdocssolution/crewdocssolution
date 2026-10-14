@@ -45,9 +45,9 @@
             if (!this.formData.name || !this.formData.phone) return;
             const subject = 'Заявка с сайта CREW & DOCS SOLUTION';
             const body = 'Имя: ' + this.formData.name +
-                '\\nТелефон: ' + this.formData.phone +
-                '\\nУслуга: ' + this.formData.service +
-                '\\nИсточник: сайт CREW & DOCS SOLUTION';
+                '\nТелефон: ' + this.formData.phone +
+                '\nУслуга: ' + this.formData.service +
+                '\nИсточник: сайт CREW & DOCS SOLUTION';
             window.location.href = 'mailto:crewdocssolution@gmail.com?subject=' +
                 encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
             alert('Откроется почтовое приложение с заполненной заявкой. Для отправки нажмите «Отправить». Если почта не открылась, напишите нам в Telegram: @my_crewdocs.');
