@@ -3,7 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CREW & DOCS SOLUTION</title>
+        <title>Морские документы для моряков | CREW & DOCS SOLUTION</title>
+    <meta name="description" content="CREW & DOCS SOLUTION — консультации и сопровождение моряков по морским документам, дипломированию, подготовке и трудоустройству. Свяжитесь с нами для уточнения условий.">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://crewdocssolution.github.io/crewdocssolution/">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:title" content="CREW & DOCS SOLUTION — морские документы для моряков">
+    <meta property="og:description" content="Консультации по морским документам, дипломированию, подготовке и трудоустройству моряков.">
+    <meta property="og:url" content="https://crewdocssolution.github.io/crewdocssolution/">
+    <meta property="og:image" content="https://crewdocssolution.github.io/crewdocssolution/logo.jpeg">
+    <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"Organization","name":"CREW & DOCS SOLUTION","url":"https://crewdocssolution.github.io/crewdocssolution/","logo":"https://crewdocssolution.github.io/crewdocssolution/logo.jpeg","email":"crewdocssolution@gmail.com","telephone":"+380972567737","sameAs":["https://www.instagram.com/crewdocs_solution","https://t.me/my_crewdocs"]}
+    </script>
     
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     
@@ -23,53 +35,24 @@
         isSending: false,
         formData: { name: '', phone: '', service: 'Дипломирование' },
         
-        // НАСТРОЙКА ТЕЛЕГРАМА (Ваши рабочие ключи)
-        telegramToken: '8738644530:AAE_7wsg03gDmklA-OWl9LI1NFHDhBdGheg', 
-        telegramChatId: '-5049944786', 
-
+        // GitHub Pages is static: never place Telegram API tokens in client-side code.
         scrollTo(id) {
             document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
             this.mobileMenuOpen = false;
         },
-        
-        async submitForm() {
-            if(!this.formData.name || !this.formData.phone) return;
-            
-            this.isSending = true;
 
-            // Формируем красивое текстовое сообщение для вашей группы менеджеров
-            const textMessage = `🚨 *Новая заявка на сайте!* \n\n` +
-                                `👤 *Имя:* ${this.formData.name}\n` +
-                                `📞 *Телефон:* ${this.formData.phone}\n` +
-                                `💼 *Услуга:* ${this.formData.service}\n\n` +
-                                `📅 *Дата:* ${new Date().toLocaleString('ru-RU')}`;
-
-            try {
-                // Отправляем запрос к официальному API Telegram
-                const response = await fetch(`https://api.telegram.org/bot${this.telegramToken}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: this.telegramChatId,
-                        text: textMessage,
-                        parse_mode: 'Markdown'
-                    })
-                });
-
-                if (response.ok) {
-                    // Если отправка успешна, открываем модальное окно на сайте
-                    this.modalActive = true;
-                } else {
-                    alert('Ошибка отправки. Убедитесь, что бот добавлен в вашу группу как администратор.');
-                }
-            } catch (error) {
-                console.error('Ошибка:', error);
-                alert('Произошла ошибка сети. Попробуйте еще раз позже.');
-            } finally {
-                this.isSending = false;
-            }
+        submitForm() {
+            if (!this.formData.name || !this.formData.phone) return;
+            const subject = 'Заявка с сайта CREW & DOCS SOLUTION';
+            const body = 'Имя: ' + this.formData.name +
+                '\\nТелефон: ' + this.formData.phone +
+                '\\nУслуга: ' + this.formData.service +
+                '\\nИсточник: сайт CREW & DOCS SOLUTION';
+            window.location.href = 'mailto:crewdocssolution@gmail.com?subject=' +
+                encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+            alert('Откроется почтовое приложение с заполненной заявкой. Для отправки нажмите «Отправить». Если почта не открылась, напишите нам в Telegram: @my_crewdocs.');
         },
-        
+
         closeModal() {
             this.modalActive = false;
             this.formData = { name: '', phone: '', service: 'Дипломирование' };
