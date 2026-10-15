@@ -52,6 +52,9 @@
                         name: this.formData.name,
                         phone: this.formData.phone,
                         service: this.formData.service,
+                        source: (new URLSearchParams(location.search).get('utm_source') || '').slice(0,80),
+                        referrer: (document.referrer || '').slice(0,250),
+                        page: 'index.html',
                         website: ''
                     })
                 });
