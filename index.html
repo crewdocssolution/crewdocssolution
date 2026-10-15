@@ -37,7 +37,10 @@
     const link = event.target.closest('a[href]');
     if (!link || typeof gtag !== 'function') return;
     const url = link.href;
-    if (/^https:\/\/t\.me\//i.test(url)) gtag('event', 'contact_click', {contact_channel:'telegram',page_path:location.pathname});
+    if (/^https:\/\/t\.me\//i.test(url)) {
+      gtag('event', 'contact_click', {contact_channel:'telegram',page_path:location.pathname});
+      gtag('event', 'telegram_click', {contact_channel:'telegram',page_path:location.pathname});
+    }
     if (/^https:\/\/wa\.me\//i.test(url)) gtag('event', 'contact_click', {contact_channel:'whatsapp',page_path:location.pathname});
     if (/^tel:/i.test(link.getAttribute('href'))) gtag('event','contact_click',{contact_channel:'phone',page_path:location.pathname});
   });
