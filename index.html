@@ -26,6 +26,22 @@
     <style>
         [x-cloak] { display: none !important; }
     </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-4GWEBTKYRP"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-4GWEBTKYRP');
+  document.addEventListener('click', function(event) {
+    const link = event.target.closest('a[href]');
+    if (!link || typeof gtag !== 'function') return;
+    const url = link.href;
+    if (/^https:\/\/t\.me\//i.test(url)) gtag('event', 'contact_click', {contact_channel:'telegram',page_path:location.pathname});
+    if (/^https:\/\/wa\.me\//i.test(url)) gtag('event', 'contact_click', {contact_channel:'whatsapp',page_path:location.pathname});
+    if (/^tel:/i.test(link.getAttribute('href'))) gtag('event','contact_click',{contact_channel:'phone',page_path:location.pathname});
+  });
+</script>
 </head>
 <body class="min-h-screen bg-[#22050b] text-[#fcfaf7] font-sans overflow-x-hidden selection:bg-[#4d614a] selection:text-[#fcfaf7]" 
       x-data="{ 
@@ -62,6 +78,7 @@
                 const result = await response.json();
                 if (!result.ok) throw new Error('Delivery failed');
                 this.modalActive = true;
+                if (typeof gtag === 'function') gtag('event','generate_lead',{service:this.formData.service,method:'website_form'});
             } catch (error) {
                 console.error('Ошибка доставки заявки', error);
                 alert('Не удалось отправить заявку. Напишите нам в Telegram: @my_crewdocs или позвоните +380972567737.');
